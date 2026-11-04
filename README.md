@@ -4,7 +4,6 @@
 
 ---
 
-```markdown
 # 🚗 Vehicle Distance Alert System (30m) & Interactive Web Course
 **ລະບົບວິເຄາະໄລຍະຫ່າງລົດທາງໜ້າ 30 ແມັດ ດ້ວຍ Python (YOLOv8 + OpenCV) ພ້ອມເວັບໄຊຄູ່ມືການຮຽນຮູ້ແບບ Interactive**
 
@@ -85,8 +84,6 @@ vehicle-distance-alert-system/
     ├── lane_config.json                    # ໄຟລ໌ JSON ເກັບຄ່າ lane_points ແລະ lane_top_y
     └── output_dome_30m.mp4                 # ວິດີໂອຜົນລັບທີ່ຜ່ານການຕີກອບວັດແທກໄລຍະ 30m ແລ້ວ
 ```
-
----
 
 ## 🚀 ວິທີຕິດຕັ້ງ ແລະ ລັນໂປຣເຈັກ (Installation & Usage)
 
