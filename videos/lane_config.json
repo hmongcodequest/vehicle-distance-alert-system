@@ -1,0 +1,24 @@
+{
+  "video_name": "dome.mp4",
+  "frame_width": 1920,
+  "frame_height": 870,
+  "lane_top_y": 347,
+  "lane_points": [
+    [
+      951,
+      347
+    ],
+    [
+      980,
+      347
+    ],
+    [
+      1170,
+      466
+    ],
+    [
+      857,
+      477
+    ]
+  ]
+}

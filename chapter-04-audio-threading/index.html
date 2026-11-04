@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ບົດທີ 4: ສຽງເຕືອນ Beep, beep, beep! ດ້ວຍ Threading & ແກ້ໄຂບັນຫາ Python 3.14</title>
+  <link rel="stylesheet" href="css/shadcn-theme.css">
+  <link rel="stylesheet" href="css/chapter-04.css">
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="nav-brand">
+      <a href="../index.html" class="btn badge-outline" style="padding: 0.3rem 0.6rem; text-decoration: none; border-radius: 0.4rem;">← ກັບໜ້າສາລະບານ</a>
+      <span class="badge badge-outline">Chapter 04</span>
+      <span>Triple Beep Threading, Modular Utils & Python 3.14 Fix</span>
+    </div>
+    <div class="nav-actions">
+      <span class="text-muted">Python `threading.Thread` + `winsound` / `wave`</span>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="lesson-header">
+      <h1>4. ລະບົບສຽງເຕືອນ "Beep, beep, beep!" ແບບ Threading ແລະ ການລວມລະບົບສົມບູນ</h1>
+      <p class="subtitle">
+        ຮຽນຮູ້ວິທີສ້າງສຽງເຕືອນ 3 ຈັງຫວະ (<strong>"Beep, beep, beep!"</strong>) ແບບແຍກ Thread ເພື່ອບໍ່ໃຫ້ພາບກ້ອງກະຕຸກ, ການເອີ້ນໃຊ້ໂຟລເດີແພັກເກັດ <code>utils/</code> ແລະ ວິທີແກ້ໄຂບັນຫາຕິດຕັ້ງ <code>pygame</code> ບໍ່ຜ່ານໃນ Python 3.14.
+      </p>
+    </div>
+
+    <div class="grid-layout">
+      
+      <!-- ຝັ່ງຊ້າຍ: ເຄື່ອງຈຳລອງປຽບທຽບ Threading vs Blocking -->
+      <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">⚡ ທົດລອງປຽບທຽບ: ໃຊ້ Thread vs ບໍ່ໃຊ້ Thread</h2>
+              <p class="card-description">ຟັງສຽງ "Beep, beep, beep!" ແລະ ສັງເກດຄ່າ FPS ເມື່ອລົດເຂົ້າໃກ້ກວ່າ 30 ແມັດ</p>
+            </div>
+            <div class="fps-box">
+              <span class="text-sm text-muted">ຄວາມລື່ນພາບ:</span>
+              <strong id="fpsCounter" class="fps-good">60 FPS</strong>
+            </div>
+          </div>
+
+          <div class="canvas-wrapper">
+            <canvas id="threadCanvas" width="700" height="300"></canvas>
+          </div>
+
+          <div class="cooldown-status-bar">
+            <div class="cooldown-info">
+              <span id="soundStateText">🔊 ສະຖານະສຽງ: ພ້ອມແຈ້ງເຕືອນ (Ready)</span>
+              <span id="cooldownTimerText" class="text-sm text-muted">Cooldown: 0.0s</span>
+            </div>
+            <div class="progress-track">
+              <div id="cooldownProgress" class="progress-fill"></div>
+            </div>
+          </div>
+
+          <div class="controls-panel">
+            <div class="mode-switch">
+              <button id="modeThreadBtn" class="btn btn-primary">✅ ໂໝດໃຊ້ Threading (ພາບລື່ນ 60 FPS)</button>
+              <button id="modeBlockBtn" class="btn btn-outline">❌ ໂໝດບໍ່ໃຊ້ Thread (ພາບກະຕຸກ/ຄ້າງ)</button>
+            </div>
+
+            <div class="sliders-row">
+              <div class="slider-item">
+                <div class="slider-label">
+                  <span>ໄລຍະຫ່າງລົດທາງໜ້າ:</span>
+                  <strong id="distValText" style="color: var(--danger);">22.0 ແມັດ (< 30m)</strong>
+                </div>
+                <input type="range" id="simDistSlider" min="12" max="45" step="0.5" value="22">
+              </div>
+
+              <div class="slider-item">
+                <div class="slider-label">
+                  <span>ເວລາໜ่วงສຽງ (ALERT_COOLDOWN):</span>
+                  <strong id="cooldownValText">2.5 ວິນາທີ</strong>
+                </div>
+                <input type="range" id="cooldownSlider" min="1.0" max="5.0" step="0.5" value="2.5">
+              </div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
+              <button id="testSoundBtn" class="btn btn-outline">🔔 ກົດຟັງສຽງ "Beep, beep, beep!"</button>
+              <label class="text-sm" style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                <input type="checkbox" id="autoSoundCheck" checked> ເປີດສຽງອັດຕະໂນມັດເມື່ອ < 30m
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- ກ່ອງອະທິບາຍວິທີແກ້ Error Pygame ໃນ Python 3.14 -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">🛠️ ວິທີແກ້ໄຂ Error: `Failed to build pygame (No module named distutils.msvccompiler)`</h3>
+              <p class="card-description">ບັນຫາທີ່ພົບເມື່ອລັນ `pip install -r requirements.txt` ເທິງ Python 3.13 / 3.14 ໃນ Windows</p>
+            </div>
+          </div>
+          <p class="text-sm text-muted" style="margin-bottom: 0.75rem;">
+            <strong>ສາເຫດ:</strong> Python ເວີຊັນໃໝ່ (3.14) ໄດ້ຕັດໂມດູນ <code>distutils</code> ອອກໄປແລ້ວ ເຮັດໃຫ້ <code>pygame 2.6.1</code> ບໍ່ສາມາດ Compile ຕົວເອງໄດ້.<br>
+            <strong>ວິທີແກ້ໄຂ (ເລືອກວິທີໃດໜຶ່ງ):</strong>
+          </p>
+          <pre class="code-box"><code># ວິທີທີ 1 (ແນະນຳ): ໃຊ້ winsound ທີ່ມານຳ Windows Python ໂດຍກົງ (ບໍ່ຕ້ອງລົງ pygame ເລີຍ)
+# ໃນ requirements.txt ໃຫ້ເຫຼືອພຽງ:
+opencv-python>=4.8.0
+ultralytics>=8.0.0
+
+# ວິທີທີ 2: ປ່ຽນໄປຕິດຕັ້ງ pygame-ce (Community Edition) ທີ່ຮອງຮັບ Python 3.14 ແລ້ວ:
+pip install pygame-ce</code></pre>
+        </div>
+      </div>
+
+      <!-- ຝັ່ງຂວາ: ໂຄ້ດສຽງ Beep 3 ບາດ ແລະ ຂັ້ນຕອນການລັນລະບົບຈິງ -->
+      <div class="side-column">
+        
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">🐍 ໂຄ້ດສ້າງສຽງ "Beep, beep, beep!" (`audio_manager.py`)</h3>
+              <p class="card-description">ດັງ 3 ຈັງຫວະຕິດຕໍ່ກັນຜ່ານ Background Thread</p>
+            </div>
+          </div>
+          <pre class="code-box"><code>def _sound_worker(self):
+    # ສຳລັບ Windows: ດັງ Beep, beep, beep! (1200Hz 3 ບາດ)
+    if platform.system() == "Windows":
+        import winsound
+        for _ in range(3):
+            winsound.Beep(1200, 120)
+            time.sleep(0.08)
+        return
+
+    # ສຳລັບ WSL (Linux on Windows):
+    ps_cmd = (
+        "[console]::beep(1200,120); Start-Sleep -m 70; "
+        "[console]::beep(1200,120); Start-Sleep -m 70; "
+        "[console]::beep(1200,120)"
+    )
+    subprocess.run(
+        ["powershell.exe", "-NoProfile", "-Command", ps_cmd],
+        check=False
+    )</code></pre>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">🚀 ຂັ້ນຕອນລັນລະບົບສົມບູນ (2 Steps Workflow)</h3>
+              <p class="card-description">ລວມທຸກບົດຮຽນ ແລະ ໂຟລເດີ `utils/` ເຂົ້າກັນ</p>
+            </div>
+          </div>
+          <ul class="feature-list">
+            <li>✅ <strong>Step 1 (`select_lane_roi.py`):</strong> ກົດເລືອກ <code>lane_points</code> 4 ຈຸດ ແລະ <code>lane_top_y</code> ແລ້ວກົດ <code>'s'</code> ເພື່ອບັນທຶກເປັນໄຟລ໌ <code>videos/lane_config.json</code>.</li>
+            <li>✅ <strong>Step 2 (`full_system_30m.py`):</strong> ໂຫຼດໄຟລ໌ JSON ມາຄຳນວນໄລຍະ 30m ຕົວຈິງ (ເຊື່ອງເສັ້ນ <code>lane_top_y</code>), ໃຊ້ໂຟລເດີ <code>utils/</code> ຕັດສິ່ງລົບກວນ ແລະ ປ່ອຍສຽງ <strong>"Beep, beep, beep!"</strong>.</li>
+          </ul>
+          <pre class="terminal-box"># 1. ຕັ້ງຄ່າເຂດເລນລົງໄຟລ໌ JSON ກ່ອນ
+python chapter-04-audio-threading/python/select_lane_roi.py
+
+# 2. ລັນລະບົບວິເຄາະໄລຍະ 30m ຕົວຈິງ
+python chapter-04-audio-threading/python/full_system_30m.py</pre>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

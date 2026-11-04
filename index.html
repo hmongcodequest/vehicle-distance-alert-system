@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📚 ສາລະບານຫຼັກສູດ: ລະບົບວິເຄາະໄລຍະຫ່າງລົດ 30 ແມັດດ້ວຍ Python & AI</title>
+  <link rel="stylesheet" href="portal-assets/css/shadcn-theme.css">
+  <link rel="stylesheet" href="portal-assets/css/portal.css">
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="nav-brand">
+      <span class="logo-icon">🚗</span>
+      <span>Vehicle Distance 30m — Interactive Course</span>
+      <span class="badge badge-outline">Python + YOLOv8</span>
+    </div>
+    <div class="nav-right">
+      <a href="frontend/index.html" class="btn btn-primary btn-sm" style="margin-right: 0.5rem;">🎬 ເປີດ Dashboard (dome.mp4)</a>
+      <button id="resetProgressBtn" class="btn btn-outline btn-sm">🔄 ລ້າງຄວາມຄືບໜ້າ</button>
+    </div>
+  </header>
+
+  <main class="container">
+    
+    <section class="hero-card card">
+      <div class="hero-content">
+        <div>
+          <span class="badge badge-safe" style="margin-bottom: 0.6rem;">Complete Interactive Guide</span>
+          <h1>ຄູ່ມືການສ້າງລະບົບວິເຄາະໄລຍະຫ່າງລົດທາງໜ້າ 30 ແມັດ</h1>
+          <p class="hero-subtitle">
+            ຮຽນຮູ້ຕັ້ງແຕ່ພື້ນຖານຄະນິດສາດສາມແຈຄ້າຍຄື, ການກຳນົດເຂດເລນລົງໄຟລ໌ JSON, ການແຍກໂຟລເດີ <code>utils/</code> ຕັດສິ່ງລົບກວນ ໄປຈົນເຖິງສຽງເຕືອນ "Beep, beep, beep!" ດ້ວຍ Threading.
+          </p>
+        </div>
+
+        <div class="progress-widget">
+          <div class="progress-header">
+            <span>ຄວາມຄືບໜ້າການຮຽນຮູ້ (Progress)</span>
+            <strong id="progressPercentText">0% (0/4 ບົດ)</strong>
+          </div>
+          <div class="progress-bar-bg">
+            <div id="progressBarFill" class="progress-bar-fill"></div>
+          </div>
+          <p class="text-xs text-muted" style="margin-top: 0.45rem;">
+            💡 ຄລິກໝາຍຖືກໃນແຕ່ລະບົດຮຽນເມື່ອເຈົ້າທົດລອງເຮັດສຳເລັດແລ້ວ
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="chapters-section">
+      <div class="section-title-row">
+        <h2>📖 ບົດຮຽນທັງໝົດໃນຫຼັກສູດ (4 Chapters)</h2>
+        <span class="text-sm text-muted">ກົດ "ເປີດບົດຮຽນ Interactive" ເພື່ອເຂົ້າສູ່ໜ້າທົດລອງຂອງແຕ່ລະບົດ</span>
+      </div>
+
+      <div id="chaptersGrid" class="chapters-grid"></div>
+    </section>
+
+    <!-- ກ່ອງລວມຄຳສັ່ງລັນໂຄ້ດ Python ທັງໝົດ ພ້ອມວິທີໃຊ້ venv -->
+    <section class="python-hub card" style="margin-bottom: 2rem;">
+      <div class="card-header">
+        <div>
+          <h2 class="card-title">🐍 ລວມຄຳສັ່ງຕັ້ງຄ່າ Virtual Environment (venv) & ລັນລະຫັດ Python ທັງໝົດ</h2>
+          <p class="card-description">ຮອງຮັບທັງ Windows PowerShell ແລະ WSL (Linux) ພ້ອມຂັ້ນຕອນສ້າງໄຟລ໌ JSON ກ່ອນຄຳນວນຕົວຈິງ</p>
+        </div>
+        <button id="copyAllCliBtn" class="btn btn-outline">📋 ກ໊ອບປີ້ຄຳສັ່ງທັງໝົດ</button>
+      </div>
+
+      <pre class="cli-block"><code id="cliCommandsText"># =====================================================================
+# ຂັ້ນຕອນທີ 1: ການສ້າງ ແລະ ເປີດໃຊ້ງານ Virtual Environment (venv)
+# =====================================================================
+python -m venv venv
+
+# 👉 ເປີດໃຊ້ງານໃນ Windows (PowerShell):
+.\venv\Scripts\Activate.ps1
+# 👉 ເປີດໃຊ້ງານໃນ WSL / Linux / macOS:
+source venv/bin/activate
+
+# ຕິດຕັ້ງ Library (ໃຊ້ pygame-ce ເພື່ອຮອງຮັບ Python 3.13 / 3.14 ໂດຍບໍ່ຕິດ Error distutils)
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+
+# =====================================================================
+# ຂັ້ນຕອນທີ 2: ຄຳສັ່ງລັນທົດສອບລະຫັດ Python ແຕ່ລະບົດ (1 ຫາ 4)
+# =====================================================================
+
+# 📘 [ບົດທີ 1] ທົດສອບສູດຄະນິດສາດສາມແຈຄ້າຍຄືພື້ນຖານ (D = W * F / P)
+python chapter-01-triangle-similarity/python/triangle_math.py
+
+# 🧪 [ບົດທີ 2] ຄິດໄລ່ຫາຄ່າ FOCAL_LENGTH ຂອງກ້ອງ ແລະ ທົດສອບໄລຍະ 30m
+python chapter-02-interactive-lab/python/calibrate_camera.py
+python chapter-02-interactive-lab/python/distance_calculator.py
+
+# 🎯 [ບົດທີ 3] ທົດສອບກ້ອງ YOLOv8 ກັບວິດີໂອແທ້ videos/dome.mp4
+python chapter-03-yolov8-detection/python/run_video_test.py
+
+# ⭐ [ບົດທີ 4 - Step 1] ກົດເລືອກເຂດເລນ 4 ຈຸດ ແລະ lane_top_y ເພື່ອບັນທຶກເປັນ videos/lane_config.json
+python chapter-04-audio-threading/python/select_lane_roi.py
+
+# ⭐ [ບົດທີ 4 - Step 2] ລັນລະບົບຄຳນວນຕົວຈິງ (ໂຫຼດ JSON + ໂຟລເດີ utils/ ຕັດສິ່ງລົບກວນ + ສຽງ Beep, beep, beep!)
+python chapter-04-audio-threading/python/full_system_30m.py</code></pre>
+    </section>
+
+    <!-- ກ່ອງສະຫຼຸບບົດຮຽນການແກ້ໄຂບັນຫາຕົວຈິງ (Troubleshooting & Architecture Notes) -->
+    <section class="card">
+      <div class="card-header">
+        <div>
+          <h2 class="card-title">🛠️ ບັນທຶກການແກ້ໄຂບັນຫາຕົວຈິງໃນໂປຣເຈັກ (Real-World Troubleshooting Notes)</h2>
+          <p class="card-description">ສະຫຼຸບ 4 ບັນຫາສຳຄັນທີ່ເຮົາພົບຕອນທົດສອບກັບວິດີໂອແທ້ `dome.mp4` ແລະ ວິທີແກ້ໄຂໃນລະຫັດ</p>
+        </div>
+      </div>
+
+      <div class="chapters-grid">
+        <div class="python-files-box" style="margin-bottom: 0;">
+          <strong style="color: var(--accent-blue);">1. ບັນຫາຕິດຕັ້ງ `pygame` ໃນ Python 3.14 (`No module named distutils`)</strong>
+          <p class="text-sm text-muted" style="margin-top: 0.35rem;">
+            <strong>ສາເຫດ:</strong> Python 3.14 ຕັດໂມດູນ <code>distutils</code> ອອກ ເຮັດໃຫ້ <code>pygame 2.6.1</code> ບໍ່ສາມາດ Build Wheel ເທິງ Windows ໄດ້.<br>
+            <strong>ວິທີແກ້:</strong> ປ່ຽນໄປໃຊ້ <code>pygame-ce</code> ໃນ <code>requirements.txt</code> ຫຼື ໃຊ້ໂມດູນມາດຕະຖານ <code>winsound</code> + <code>wave</code> ໃນ <code>audio_manager.py</code> ເຊິ່ງເຮັດວຽກໄດ້ທັນທີໂດຍບໍ່ຕ້ອງຕິດຕັ້ງ Library ເພີ່ມ.
+          </p>
+        </div>
+
+        <div class="python-files-box" style="margin-bottom: 0;">
+          <strong style="color: var(--accent-blue);">2. ການແຍກໄຟລ໌ຕັ້ງຄ່າເຂດເລນ (`lane_config.json`) & ເຊື່ອງເສັ້ນ `lane_top_y`</strong>
+          <p class="text-sm text-muted" style="margin-top: 0.35rem;">
+            <strong>ວິທີແກ້:</strong> ສ້າງໄຟລ໌ <code>select_lane_roi.py</code> ເພື່ອຄລິກກຳນົດ <code>lane_points</code> (4 ຈຸດ) ແລະ <code>lane_top_y</code> ແລ້ວບັນທຶກເປັນ JSON ກ່ອນ. ຈາກນັ້ນໃນ <code>full_system_30m.py</code> ໃຫ້ໃຊ້ <code>lane_top_y</code> ກວດສອບຢູ່ເບື້ອງຫຼັງໂດຍເຊື່ອງ (Hide) ບໍ່ແຕ້ມເສັ້ນ Line Y ອອກມາບັງໜ້າຈໍ.
+          </p>
+        </div>
+
+        <div class="python-files-box" style="margin-bottom: 0;">
+          <strong style="color: var(--accent-blue);">3. ລົດຢູ່ໄກກວດຈັບບໍ່ເຫັນ & ກ່ອງຍັກກວດຈັບເສົາລົດຕົວເອງ (`Out: 1.2m`)</strong>
+          <p class="text-sm text-muted" style="margin-top: 0.35rem;">
+            <strong>ວິທີແກ້:</strong> ຕັດພາບ (Crop) ສະເພາະບໍລິເວນປ່ອງຢ້ຽມໜ້າລົດອ້ອມຮອບເຂດເລນສີຟ້າກ່ອນສົ່ງໃຫ້ YOLOv8 (<code>imgsz=960</code>) ເພື່ອຊູມຫາລົດໄລຍະໄກ ແລະ ໃຊ້ <code>utils/geometry_filter.py</code> ຕັດກ່ອງທີ່ກວ້າງເກີນ 22% ຂອງຈໍຖິ້ມ.
+          </p>
+        </div>
+
+        <div class="python-files-box" style="margin-bottom: 0;">
+          <strong style="color: var(--accent-blue);">4. ກ່ອງສີແດງ `WARNING!` ຊ້ອນທັບກັນຫຼາຍອັນເທິງລົດຄັນດຽວ</strong>
+          <p class="text-sm text-muted" style="margin-top: 0.35rem;">
+            <strong>ວິທີແກ້:</strong> ເປີດໃຊ້ <code>agnostic_nms=True</code> ໃນ YOLOv8 ຮ່ວມກັບຟັງຊັນ <code>remove_overlapping_boxes()</code> ໃນ <code>utils/bbox_nms.py</code> ເພື່ອກວດຄ່າ Containment Ratio ແລະ ຍຸບກ່ອງຊ້ອນກັນໃຫ້ເຫຼືອພຽງ 1 ກ່ອງຕໍ່ລົດ 1 ຄັນ.
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script type="module" src="portal-assets/js/main.js"></script>
+</body>
+</html>

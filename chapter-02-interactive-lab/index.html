@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ບົດທີ 2: ຫ້ອງທົດລອງສູດ & ລະຫັດ Python (Interactive Lab)</title>
+  <link rel="stylesheet" href="css/shadcn-theme.css">
+  <link rel="stylesheet" href="css/chapter-02.css">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="nav-brand">
+      <span class="badge badge-outline">Chapter 02</span>
+      <span>ຫ້ອງທົດລອງຄິດໄລ່ສູດ & ການປັບຄ່າກ້ອງດ້ວຍ Python</span>
+    </div>
+    <div class="nav-actions">
+      <span class="text-muted">Interactive Formula & Python Generator</span>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="lesson-header">
+      <h1>2. ຫ້ອງທົດລອງປັບຄ່າຕົວແປ (W, F, P) ແລະ ການຂຽນໂຄ້ດ Python</h1>
+      <p class="subtitle">
+        ທົດລອງປັບຄ່າຄວາມກວ້າງຂອງລົດແຕ່ລະປະເພດ (ລົດເກັງ, ລົດກະບະ, ລົດບັນທຸກ) ແລະ ຄ່າ Focal Length ຂອງກ້ອງ ເພື່ອສ້າງໄຟລ໌ຕັ້ງຄ່າ Python ທີ່ຖືກຕ້ອງສຳລັບກ້ອງຂອງເຈົ້າ.
+      </p>
+    </div>
+
+    <div class="grid-layout">
+      
+      <!-- ຝັ່ງຊ້າຍ: ເຄື່ອງມືທົດລອງປັບຄ່າ (Interactive Sliders) -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <h2 class="card-title">🧪 ແຜງຄວບຄຸມຕົວແປ (Parameter Controls)</h2>
+            <p class="card-description">ປັບຄ່າລຸ່ມນີ້ເພື່ອເບິ່ງຜົນກະທົບຕໍ່ໄລຍະ 30 ແມັດ ແລະ ໂຄ້ດ Python ທາງຂວາ</p>
+          </div>
+          <span id="statusBadge" class="badge badge-safe">ພໍດີເກນ 30.0m</span>
+        </div>
+
+        <!-- ປຸ່ມເລືອກປະເພດລົດ -->
+        <div class="vehicle-selector">
+          <span class="text-sm text-muted">ເລືອກປະເພດລົດທາງໜ້າ:</span>
+          <div class="btn-group">
+            <button class="btn btn-primary vehicle-btn" data-width="1.8">🚗 ລົດເກັງ (1.8m)</button>
+            <button class="btn btn-outline vehicle-btn" data-width="2.0">🛻 ລົດກະບະ/SUV (2.0m)</button>
+            <button class="btn btn-outline vehicle-btn" data-width="2.5">🚛 ລົດບັນທຸກ/ເມ (2.5m)</button>
+          </div>
+        </div>
+
+        <!-- Slider 1: Known Width (W) -->
+        <div class="slider-box">
+          <div class="slider-top">
+            <label for="sliderW">1. ຄວາມກວ້າງຕົວຈິງຂອງລົດ (KNOWN_WIDTH - W)</label>
+            <span id="labelW" class="val-badge">1.8 ແມັດ</span>
+          </div>
+          <input type="range" id="sliderW" min="1.5" max="2.6" step="0.1" value="1.8">
+        </div>
+
+        <!-- Slider 2: Focal Length (F) -->
+        <div class="slider-box">
+          <div class="slider-top">
+            <label for="sliderF">2. ຄ່າໂຟກັສກ້ອງ (FOCAL_LENGTH - F)</label>
+            <span id="labelF" class="val-badge">800</span>
+          </div>
+          <input type="range" id="sliderF" min="400" max="1400" step="10" value="800">
+        </div>
+
+        <!-- Slider 3: Pixel Width (P) -->
+        <div class="slider-box">
+          <div class="slider-top">
+            <label for="sliderP">3. ຄວາມກວ້າງກ່ອງລົດໃນພາບ (PIXEL_WIDTH - P)</label>
+            <span id="labelP" class="val-badge">48 Pixels</span>
+          </div>
+          <input type="range" id="sliderP" min="15" max="160" step="1" value="48">
+        </div>
+
+        <!-- ກ່ອງສະແດງຜົນລັບ ແລະ ພາບຈຳລອງກ່ອງ Bounding Box -->
+        <div class="result-display">
+          <div class="result-info">
+            <span class="text-sm text-muted">ໄລຍະຫ່າງທີ່ຄິດໄລ່ໄດ້ (Distance):</span>
+            <div id="resultDistance" class="big-distance">30.0 ແມັດ</div>
+            <span id="pixelAt30m" class="text-sm text-muted">
+              💡 ທີ່ໄລຍະ 30m ກ່ອງລົດຈະກວ້າງປະມານ <strong>48.0 px</strong>
+            </span>
+          </div>
+          <div class="bbox-preview-wrapper">
+            <div id="bboxPreview" class="bbox-preview">
+              <span id="bboxLabel">48px</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ຝັ່ງຂວາ: ໂຄ້ດ Python ທີ່ສ້າງຂຶ້ນອັດຕະໂນມັດ -->
+      <div class="side-column">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">🐍 ລະຫັດ Python ພ້ອມໃຊ້ງານ (Live Generated Code)</h2>
+              <p class="card-description">ໂຄ້ດນີ້ອັບເດດຄ່າ W, F, P ຕາມທີ່ເຈົ້າປັບທາງຊ້າຍໂດຍອັດຕະໂນມັດ</p>
+            </div>
+            <button id="copyCodeBtn" class="btn btn-outline">📋 ກ໊ອບປີ້ໂຄ້ດ</button>
+          </div>
+
+          <pre class="code-block"><code id="pythonCodeDisplay"></code></pre>
+        </div>
+
+        <!-- ຄຳແນະນຳການລັນໄຟລ໌ Python ໃນໂຟລເດີ -->
+        <div class="card">
+          <h3 class="card-title" style="margin-bottom: 0.5rem;">💻 ວິທີລັນໄຟລ໌ Python ໃນໂຟລເດີບົດທີ 2</h3>
+          <p class="text-sm text-muted" style="margin-bottom: 0.75rem;">
+            ໃນໂຟລເດີ <code>python/</code> ມີໄຟລ໌ພ້ອມລັນ 2 ໄຟລ໌ ສາມາດເປີດ Terminal ທົດສອບໄດ້ທັນທີ:
+          </p>
+          <pre class="terminal-box"># 1. ທົດສອບໂມດູນຄິດໄລ່ໄລຍະຫ່າງ 30m
+python python/distance_calculator.py
+
+# 2. ເປີດເຄື່ອງມືຊ່ວຍຫາຄ່າ Focal Length ຈາກຮູບ/ກ້ອງ
+python python/calibrate_camera.py</pre>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

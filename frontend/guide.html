@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📚 ຄູ່ມືການຮຽນ - ລະບົບວິເຄາະໄລຍະຫ່າງລົດ 30m</title>
+  <link rel="stylesheet" href="css/shadcn-theme.css">
+  <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <a href="index.html" class="nav-brand">
+      <span>🚗</span> Vehicle Distance AI (30m)
+    </a>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">ໜ້າກະດານຄວບຄຸມ (Dashboard)</a>
+      <a href="guide.html" class="nav-link active">📚 ຄູ່ມືການຮຽນ (Study Guide)</a>
+    </div>
+  </nav>
+
+  <main class="container">
+    <div class="grid-guide">
+      
+      <!-- ແຖບເມນູທາງຊ້າຍ (Sidebar) -->
+      <aside>
+        <div class="card" style="position: sticky; top: 5rem;">
+          <h3 class="card-title" style="margin-bottom: 0.75rem;">ຫົວຂໍ້ການຮຽນຮູ້</h3>
+          <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.9rem;">
+            <li><a href="#theory" class="nav-link">1. ທິດສະດີສາມແຈຄ້າຍຄື</a></li>
+            <li><a href="#interactive" class="nav-link">2. ທົດລອງຄິດໄລ່ສູດ (Interactive)</a></li>
+            <li><a href="#python-code" class="nav-link">3. ໂຄ້ດ Python & YOLOv8</a></li>
+            <li><a href="#audio-thread" class="nav-link">4. ການຈັດການສຽງເຕືອນ</a></li>
+          </ul>
+        </div>
+      </aside>
+
+      <!-- ເນື້ອຫາຄູ່ມືທາງຂວາ -->
+      <div style="display: flex; flex-direction: column; gap: 2rem;">
+        
+        <!-- ບົດທີ 1 -->
+        <section id="theory" class="card">
+          <div class="card-header">
+            <span class="badge badge-safe" style="margin-bottom: 0.5rem;">ບົດທີ 1</span>
+            <h2 class="card-title">ຫຼັກການວັດແທກໄລຍະຫ່າງດ້ວຍກ້ອງດຽວ (Triangle Similarity)</h2>
+            <p class="card-description">ວິທີປ່ຽນຂະໜາດ Pixel ໃນພາບ ໃຫ້ກາຍເປັນໄລຍະຫ່າງຕົວຈິງ (ແມັດ)</p>
+          </div>
+          <p style="font-size: 0.95rem; margin-bottom: 1rem;">
+            ເມື່ອລົດຄັນໜ້າຢູ່ໄກ ກ່ອງສີ່เหลี่ยม (Bounding Box) ທີ່ AI ກວດຈັບໄດ້ຈະມີຂະໜາດນ້ອຍ. ແຕ່ເມື່ອລົດຫຍັບເຂົ້າໃກ້ ກ່ອງຈະໃຫຍ່ຂຶ້ນ. ເຮົາໃຊ້ສູດຄະນິດສາດດັ່ງນີ້:
+          </p>
+          <pre>Distance (D) = (Known Width (W) × Focal Length (F)) / Pixel Width (P)</pre>
+          <ul style="padding-left: 1.5rem; font-size: 0.9rem; color: var(--muted-foreground);">
+            <li><strong>W (Known Width):</strong> ຄວາມກວ້າງຕົວຈິງຂອງລົດເກັງໂດຍສະເລ່ຍ (~1.8 ແມັດ)</li>
+            <li><strong>F (Focal Length):</strong> ຄ່າຄວາມຍາວໂຟກັສຂອງກ້ອງ (ເຊັ່ນ: 800)</li>
+            <li><strong>P (Pixel Width):</strong> ຄວາມກວ້າງຂອງກ່ອງລົດທີ່ວັດແທກໄດ້ໃນພາບ (`x2 - x1`)</li>
+          </ul>
+        </section>
+
+        <!-- ບົດທີ 2: Interactive -->
+        <section id="interactive" class="card">
+          <div class="card-header">
+            <span class="badge badge-safe" style="margin-bottom: 0.5rem;">ບົດທີ 2 (Interactive)</span>
+            <h2 class="card-title">🧪 ຫ້ອງທົດລອງຄິດໄລ່ໄລຍະຫ່າງ (Formula Simulator)</h2>
+            <p class="card-description">ລອງລາກປັບຄ່າ Pixel ຫຼື Focal Length ເພື່ອເບິ່ງວ່າໄລຍະ 30 ແມັດຄິດໄລ່ອອກມາແນວໃດ</p>
+          </div>
+
+          <div class="slider-group">
+            <div class="slider-label">
+              <span>ຄວາມກວ້າງຕົວຈິງຂອງລົດ (W):</span>
+              <strong id="valW">1.8 ແມັດ</strong>
+            </div>
+            <input type="range" id="inputW" min="1.4" max="2.5" step="0.1" value="1.8">
+          </div>
+
+          <div class="slider-group">
+            <div class="slider-label">
+              <span>ຄ່າ Focal Length ຂອງກ້ອງ (F):</span>
+              <strong id="valF">800</strong>
+            </div>
+            <input type="range" id="inputF" min="400" max="1200" step="10" value="800">
+          </div>
+
+          <div class="slider-group">
+            <div class="slider-label">
+              <span>ຄວາມກວ້າງຂອງລົດໃນພາບ (P):</span>
+              <strong id="valP">48 Pixels</strong>
+            </div>
+            <input type="range" id="inputP" min="20" max="150" step="1" value="48">
+          </div>
+
+          <div style="padding: 1rem; border-radius: var(--radius); border: 1px solid var(--border); background: #121215; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <div style="font-size: 0.85rem; color: var(--muted-foreground);">ຜົນລັບໄລຍະຫ່າງ (D = W × F / P):</div>
+              <div id="calcResult" style="font-size: 2rem; font-weight: 700; color: var(--safe);">30.0 ແມັດ</div>
+            </div>
+            <span id="calcBadge" class="badge badge-safe">ພໍດີເກນ 30m</span>
+          </div>
+        </section>
+
+        <!-- ບົດທີ 3 -->
+        <section id="python-code" class="card">
+          <div class="card-header">
+            <span class="badge badge-safe" style="margin-bottom: 0.5rem;">ບົດທີ 3</span>
+            <h2 class="card-title">ໂຄ້ດ Python ກວດຈັບລົດດ້ວຍ YOLOv8</h2>
+            <p class="card-description">ການດຶງຄ່າ Bounding Box ມາຄິດໄລ່ໄລຍະ 30 ແມັດ</p>
+          </div>
+          <pre><code># ດຶງພິກັດກ່ອງສີ່เหลี่ยมຈາກ YOLOv8
+x1, y1, x2, y2 = map(int, box.xyxy[0])
+pixel_width = x2 - x1
+
+# ຄິດໄລ່ໄລຍະຫ່າງ
+distance = (KNOWN_WIDTH * FOCAL_LENGTH) / pixel_width
+
+if distance < 30.0:
+    print(f"WARNING! ລົດຢູ່ໃກ້ເກີນໄປ: {distance:.1f}m")</code></pre>
+        </section>
+
+        <!-- ບົດທີ 4 -->
+        <section id="audio-thread" class="card">
+          <div class="card-header">
+            <span class="badge badge-safe" style="margin-bottom: 0.5rem;">ບົດທີ 4</span>
+            <h2 class="card-title">ເຕັກນິກການໃສ່ສຽງເຕືອນໂດຍບໍ່ໃຫ້ພາບກະຕຸກ</h2>
+            <p class="card-description">ການໃຊ້ Threading ແລະ Cooldown Timer (2.5 ວິນາທີ)</p>
+          </div>
+          <p style="font-size: 0.95rem;">
+            ຖ້າເຮົາສັ່ງຫຼິ້ນສຽງໃນ Loop ຂອງ OpenCV ໂດຍກົງ ພາບວິດີໂອຈະຄ້າງຈົນກວ່າສຽງຈະດັງຈົບ. ດັ່ງນັ້ນ ເຮົາຈຶ່ງຕ້ອງໃຊ້ <code>threading.Thread</code> ແຍກສຽງອອກໄປເຮັດວຽກເບື້ອງຫຼັງ ແລະ ຕັ້ງເວລາ Cooldown ບໍ່ໃຫ້ສຽງດັງຊ້ຳກັນລົວໆ.
+          </p>
+        </section>
+
+      </div>
+    </div>
+  </main>
+
+  <script type="module" src="js/guide-interactive.js"></script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ບົດທີ 3: ການກວດຈັບລົດດ້ວຍ YOLOv8, ເຂດເລນ JSON & ໂຟລເດີ utils/</title>
+  <link rel="stylesheet" href="css/shadcn-theme.css">
+  <link rel="stylesheet" href="css/chapter-03.css">
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="nav-brand">
+      <a href="../index.html" class="btn badge-outline" style="padding: 0.3rem 0.6rem; text-decoration: none; border-radius: 0.4rem;">← ກັບໜ້າສາລະບານ</a>
+      <span class="badge badge-outline">Chapter 03</span>
+      <span>YOLOv8 Detection, JSON Lane Config & Modular `utils/`</span>
+    </div>
+    <div class="nav-actions">
+      <span class="text-muted">COCO Classes: Car (2), Bus (5), Truck (7)</span>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="lesson-header">
+      <h1>3. ການກວດຈັບລົດດ້ວຍ YOLOv8, ການຕັ້ງຄ່າເລນດ້ວຍ JSON ແລະ ການຕັດສິ່ງລົບກວນ (`utils/`)</h1>
+      <p class="subtitle">
+        ຮຽນຮູ້ວິທີກັ່ນຕອງສະເພາະລົດໃນເລນທາງໜ້າດ້ວຍໄຟລ໌ <code>videos/lane_config.json</code> (ເຊື່ອງເສັ້ນ <code>lane_top_y</code> ໄວ້ເບື້ອງຫຼັງ) ແລະ ການແຍກໂຟລເດີແພັກເກັດ <code>utils/</code> ເພື່ອແກ້ບັນຫາກ່ອງຊ້ອນທັບກັນ ແລະ ກ່ອງລົບກວນຈາກຫ້ອງໂດຍສານລົດ.
+      </p>
+    </div>
+
+    <div class="grid-layout">
+      
+      <!-- ຝັ່ງຊ້າຍ: ຈໍຈຳລອງກ້ອງ YOLOv8 & ບົດຮຽນໂຟລເດີ utils/ -->
+      <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">🎯 ກະດານຈຳລອງກ່ອງ YOLOv8 & ເຂດເລນ (Interactive Canvas)</h2>
+              <p class="card-description">💡 <strong>ລອງໃຊ້ເມົ້າສ໌ຄລິກລາກລົດແຕ່ລະຄັນ</strong> ເຂົ້າ-ອອກເຂດເລນສີຟ້າ ຫຼື ຫຍັບເຂົ້າໃກ້ກວ່າ 30m</p>
+            </div>
+            <span id="overallStatus" class="badge badge-safe">ທາງໜ້າປອດໄພ</span>
+          </div>
+
+          <div class="canvas-wrapper">
+            <canvas id="yoloCanvas" width="720" height="400"></canvas>
+          </div>
+
+          <div class="controls-bar">
+            <div class="control-item">
+              <label>
+                <input type="checkbox" id="toggleRoiCheck" checked>
+                ເປີດໃຊ້ການກັ່ນຕອງສະເພາະລົດໃນເລນທາງໜ້າ (ROI Filter)
+              </label>
+            </div>
+            <div class="control-item" style="flex-grow: 1;">
+              <span class="text-sm text-muted">ຄວາມກວ້າງເຂດເລນ (ROI Width):</span>
+              <input type="range" id="roiWidthSlider" min="25" max="75" value="44">
+            </div>
+          </div>
+        </div>
+
+        <!-- ກ່ອງອະທິບາຍໂຄງສ້າງໂຟລເດີ utils/ ທີ່ເຮົາແຍກໄຟລ໌ອອກມາ -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">📦 ການແຍກໂຟລເດີແພັກເກັດ `utils/` ເພື່ອຕັດສິ່ງລົບກວນ (Noise & Overlap Filter)</h3>
+              <p class="card-description">ແກ້ບັນຫາລົດຢູ່ໄກກວດບໍ່ເຫັນ, ກ່ອງຍັກກວມເສົາລົດ (<code>Out: 1.2m</code>) ແລະ ກ່ອງແດງ <code>WARNING!</code> ຊ້ອນກັນ</p>
+            </div>
+          </div>
+          <pre class="code-box"><code>chapter-04-audio-threading/python/utils/
+├── __init__.py            # Export ຟັງຊັນທັງໝົດຂອງແພັກເກັດ utils
+├── bbox_nms.py            # ຄິດໄລ່ IoU & Containment ລຶບກ່ອງແດງທີ່ຊ້ອນທັບກັນເທິງລົດຄັນດຽວ
+├── geometry_filter.py     # ຕັດກ່ອງຍັກເສົາລົດ (>22% ຂອງຈໍ) & ກວດວ່າຢູ່ໃນ lane_polygon ບໍ່
+├── detection_pipeline.py  # ລວມຂັ້ນຕອນການກັ່ນຕອງ + ຊູມພາບປ່ອງຢ້ຽມໜ້າລົດ (imgsz=960)
+└── visualizer.py          # ແຕ້ມກອບເລນສີຟ້າ (ເຊື່ອງເສັ້ນ lane_top_y) ແລະ ປ້າຍໄລຍະຫ່າງ</code></pre>
+        </div>
+      </div>
+
+      <!-- ຝັ່ງຂວາ: ຕາຕະລາງຂໍ້ມູນ Bounding Box ແລະ ຂັ້ນຕອນ JSON -->
+      <div class="side-column">
+        
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">📦 ຂໍ້ມູນກ່ອງ `r.boxes` ທີ່ກວດຈັບໄດ້</h3>
+              <p class="card-description">ຄ່າພິກັດ (x1, y1, x2, y2) ແລະ ໄລຍະຫ່າງແບບສົດໆ</p>
+            </div>
+          </div>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID / Class</th>
+                  <th>Pixel Width (x2-x1)</th>
+                  <th>ຢູ່ໃນເລນ?</th>
+                  <th>ໄລຍະຫ່າງ</th>
+                </tr>
+              </thead>
+              <tbody id="detectionTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- ກ່ອງອະທິບາຍການສ້າງໄຟລ໌ lane_config.json ກ່ອນຄຳນວນຕົວຈິງ -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">📐 ການກຳນົດເຂດເລນລົງໄຟລ໌ `lane_config.json`</h3>
+              <p class="card-description">ແຍກຂັ້ນຕອນການຕັ້ງຄ່າເລນອອກຈາກການຄຳນວນຕົວຈິງ</p>
+            </div>
+          </div>
+          <p class="text-sm text-muted" style="margin-bottom: 0.6rem;">
+            1. ລັນ <code>select_lane_roi.py</code> ເພື່ອຄລິກເລືອກ 4 ຈຸດ ແລະ <code>lane_top_y</code> ແລ້ວກົດ <strong>'S'</strong> ເພື່ອບັນທຶກເປັນ JSON.<br>
+            2. ໃນຕອນຄຳນວນຈິງ ເຮົາຈະ <strong>ເຊື່ອງ (Hide) ເສັ້ນ Line Y (<code>lane_top_y</code>)</strong> ບໍ່ໃຫ້ສະແດງເທິງຈໍ ແຕ່ໃຊ້ກວດສອບຢູ່ເບື້ອງຫຼັງ:
+          </p>
+          <pre class="code-box"><code># ກວດສອບຢູ່ເບື້ອງຫຼັງໃນ utils/geometry_filter.py
+# (ໂດຍບໍ່ແຕ້ມເສັ້ນ lane_top_y ອອກມາບັງໜ້າຈໍ)
+in_lane = (
+    bottom_center[1] >= (lane_top_y - 10) and
+    cv2.pointPolygonTest(
+        lane_polygon, bottom_center, True
+    ) >= -4.0
+)</code></pre>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

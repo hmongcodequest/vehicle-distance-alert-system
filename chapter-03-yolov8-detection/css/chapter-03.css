@@ -1,0 +1,103 @@
+.lesson-header { margin-bottom: 1.75rem; }
+.lesson-header h1 { font-size: 1.7rem; font-weight: 700; margin-bottom: 0.5rem; }
+.subtitle { color: var(--muted-foreground); font-size: 0.95rem; max-width: 850px; }
+
+.grid-layout {
+  display: grid;
+  grid-template-columns: 1.45fr 1fr;
+  gap: 1.5rem;
+}
+
+.side-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.canvas-wrapper {
+  width: 100%;
+  background: #050507;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 1rem;
+  cursor: grab;
+}
+
+.canvas-wrapper:active {
+  cursor: grabbing;
+}
+
+#yoloCanvas {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.controls-bar {
+  background: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  align-items: center;
+}
+
+.control-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.875rem;
+}
+
+input[type="checkbox"] {
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--accent-blue);
+  cursor: pointer;
+}
+
+input[type="range"] {
+  flex-grow: 1;
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+}
+
+th, td {
+  padding: 0.65rem 0.5rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+th {
+  color: var(--muted-foreground);
+  font-weight: 500;
+}
+
+.code-box {
+  background: #050507;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  font-size: 0.8rem;
+  line-height: 1.55;
+  color: #e4e4e7;
+  overflow-x: auto;
+  font-family: 'Consolas', monospace;
+}
+
+@media (max-width: 960px) {
+  .grid-layout { grid-template-columns: 1fr; }
+}

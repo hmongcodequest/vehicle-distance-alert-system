@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ບົດທີ 1: ທິດສະດີສາມແຈຄ້າຍຄື (Triangle Similarity)</title>
+  <link rel="stylesheet" href="css/shadcn-theme.css">
+  <link rel="stylesheet" href="css/chapter-01.css">
+</head>
+<body>
+
+  <!-- ແຖບເມນູດ້ານເທິງ -->
+  <header class="navbar">
+    <div class="nav-brand">
+      <a href="../index.html" class="btn btn-outline" style="padding: 0.3rem 0.6rem;">← ກັບໜ້າສາລະບານ</a>
+      <span class="badge badge-outline">Chapter 01</span>
+      <span>ທິດສະດີສາມແຈຄ້າຍຄື (Triangle Similarity)</span>
+    </div>
+    <div class="nav-actions">
+      <span class="text-muted">ເປົ້າໝາຍ: ວິເຄາະໄລຍະຫ່າງ 30 ແມັດ</span>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="lesson-header">
+      <h1>1. ຫຼັກການວັດແທກໄລຍະຫ່າງດ້ວຍກ້ອງດຽວ (Monocular Distance Estimation)</h1>
+      <p class="subtitle">
+        ຮຽນຮູ້ວິທີການປ່ຽນຂະໜາດກ່ອງສີ່เหลี่ยม (Pixel) ທີ່ກວດຈັບໄດ້ຈາກ AI ໃຫ້ກາຍເປັນໄລຍະຫ່າງຕົວຈິງເປັນ "ແມັດ" ໂດຍໃຊ້ຄຸນລັກສະນະຂອງຮູບສາມແຈຄ້າຍຄື ພ້ອມວິທີຂຽນສູດໃນພາສາ Python.
+      </p>
+    </div>
+
+    <div class="grid-layout">
+      
+      <!-- ຝັ່ງຊ້າຍ: ແຜນວາດ Interactive Canvas & ໂຄ້ດ Python ເຕັມ -->
+      <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h2 class="card-title">📐 ແຜນວາດຈຳລອງການເບິ່ງເຫັນຂອງກ້ອງ (Optical Ray Diagram)</h2>
+              <p class="card-description">ລອງລາກປຸ່ມ Slider ລຸ່ມນີ້ເພື່ອຍ້າຍລົດເຂົ້າ-ອອກ ແລ້ວສັງເກດຂະໜາດ Pixel (P) ແລະ ໂຄ້ດ Python ທາງຂວາ</p>
+            </div>
+            <span id="safetyBadge" class="badge badge-safe">ປອດໄພ (≥ 30m)</span>
+          </div>
+
+          <div class="canvas-container">
+            <canvas id="triangleCanvas" width="700" height="340"></canvas>
+          </div>
+
+          <div class="controls-panel">
+            <div class="slider-header">
+              <label for="distanceSlider">ໄລຍະຫ່າງຕົວຈິງຂອງລົດຄັນໜ້າ (D):</label>
+              <span id="distanceLabel" class="highlight-val">30.0 ແມັດ</span>
+            </div>
+            <input type="range" id="distanceSlider" min="10" max="60" step="0.5" value="30">
+            
+            <div class="preset-buttons">
+              <button class="btn btn-outline" data-dist="15">🚨 ທົດສອບໄລຍະອັນຕະລາຍ (15m)</button>
+              <button class="btn btn-primary" data-dist="30">🎯 ເກນມາດຕະຖານ (30m)</button>
+              <button class="btn btn-outline" data-dist="50">✅ ໄລຍະປອດໄພສູງ (50m)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ກ່ອງສະແດງໄຟລ໌ Python ປະຈຳບົດທີ 1 -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">🐍 ໄຟລ໌ລະຫັດ Python ປະຈຳບົດທີ 1 (`python/triangle_math.py`)</h3>
+              <p class="card-description">ຄຳສັ່ງລັນໃນ Terminal: <code>python chapter-01-triangle-similarity/python/triangle_math.py</code></p>
+            </div>
+            <button id="copyCh1PyBtn" class="btn btn-outline">📋 ກ໊ອບປີ້ໂຄ້ດ Python</button>
+          </div>
+          <pre class="code-snippet" style="margin-top: 0;"><code id="ch1PythonCode"># =====================================================================
+# ບົດທີ 1: ការຂຽນສູດສາມແຈຄ້າຍຄືໃນພາສາ Python (triangle_math.py)
+# =====================================================================
+
+KNOWN_WIDTH = 1.8    # W: ຄວາມກວ້າງຕົວຈິງຂອງລົດເກັງ (ແມັດ)
+FOCAL_LENGTH = 800.0 # F: ຄ່າຄວາມຍາວໂຟກັສຂອງກ້ອງ (Pixels)
+SAFE_DISTANCE = 30.0 # ເກນແຈ້ງເຕືອນໄລຍະຫ່າງ (30 ແມັດ)
+
+def calculate_distance(pixel_width: float) -> float:
+    """ສູດສາມແຈຄ້າຍຄື: D = (W * F) / P"""
+    return (KNOWN_WIDTH * FOCAL_LENGTH) / pixel_width
+
+# ທົດສອບດ້ວຍຄ່າ Pixel ທີ່ເຈົ້າກຳລັງເລືອກຢູ່ເທິງແຜນວາດ:
+pixel_p = 48.0
+distance_d = calculate_distance(pixel_p)
+
+print(f"ຄວາມກວ້າງໃນພາບ P = {pixel_p:.1f} px -> ໄລຍະຫ່າງ D = {distance_d:.1f} ແມັດ")
+if distance_d < SAFE_DISTANCE:
+    print("⚠️ WARNING: ລົດຄັນໜ້າຢູ່ໃກ້ກວ່າ 30 ແມັດ!")
+else:
+    print("✅ SAFE: ໄລຍະຫ່າງປອດໄພ (>= 30 ແມັດ)")</code></pre>
+        </div>
+      </div>
+
+      <!-- ຝັ່ງຂວາ: ການຄິດໄລ່ສູດ ແລະ ຄຳອະທິບາຍຕົວແປ -->
+      <div class="side-column">
+        
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">🧮 ການຄິດໄລ່ສູດຕົວຈິງ (Live Math)</h3>
+            <p class="card-description">ສູດ: D = (W × F) / P</p>
+          </div>
+
+          <div class="formula-box">
+            <div class="formula-equation">
+              <span>D = </span>
+              <div class="fraction">
+                <span class="top"><strong id="mathW">1.8m</strong> × <strong id="mathF">800px</strong></span>
+                <span class="bottom"><strong id="mathP" class="text-primary">48.0 px</strong></span>
+              </div>
+              <span> = </span>
+              <strong id="mathResult" class="result-text">30.0 m</strong>
+            </div>
+          </div>
+
+          <div class="variable-list">
+            <div class="var-item">
+              <span class="var-symbol">W</span>
+              <div class="var-detail">
+                <strong>Known Width (1.8 ແມັດ)</strong>
+                <span>ຄວາມກວ້າງຕົວຈິງໂດຍສະເລ່ຍຂອງລົດເກັງ</span>
+              </div>
+            </div>
+            <div class="var-item">
+              <span class="var-symbol">F</span>
+              <div class="var-detail">
+                <strong>Focal Length (800)</strong>
+                <span>ຄ່າຄວາມຍາວໂຟກັສຂອງກ້ອງທີ່ຜ່ານການ Calibrate ແລ້ວ</span>
+              </div>
+            </div>
+            <div class="var-item">
+              <span class="var-symbol">P</span>
+              <div class="var-detail">
+                <strong>Pixel Width (<span id="descP">48.0</span> px)</strong>
+                <span>ຄວາມກວ້າງຂອງກ່ອງລົດໃນພາບ (x2 - x1)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">💡 ວິທີຫາຄ່າ F ໃນ Python (Calibration)</h3>
+          </div>
+          <p class="text-sm text-muted">
+            ກ່ອນຈະເອົາໂຄ້ດໄປໃຊ້ຈິງ ເຮົາຕ້ອງຫາຄ່າ <strong>F</strong> ຂອງກ້ອງກ່ອນ ໂດຍການຈອດລົດຫ່າງອອກໄປ <strong>30 ແມັດພໍດີ</strong> ແລ້ວອ່ານຄ່າ Pixel (ສົມມຸດໄດ້ 48 px):
+          </p>
+          <pre class="code-snippet"># ສູດປີ້ນກັບເພື່ອຫາຄ່າ Focal Length (F)
+P = 48.0  # ຄວາມກວ້າງກ່ອງລົດໃນພາບ (Pixels)
+D = 30.0  # ໄລຍະຈອດລົດຕົວຈິງ (ແມັດ)
+W = 1.8   # ຄວາມກວ້າງລົດຕົວຈິງ (ແມັດ)
+
+FOCAL_LENGTH = (P * D) / W
+print(FOCAL_LENGTH)  # ຜົນລັບ: 800.0</pre>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="lo">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - ລະບົບວິເຄາະໄລຍະຫ່າງລົດ 30m</title>
+  <link rel="stylesheet" href="css/shadcn-theme.css">
+  <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="../index.html" class="nav-brand">
+      <span>🚗</span> Vehicle Distance AI (30m)
+    </a>
+    <div class="nav-links">
+      <a href="../index.html" class="nav-link">🏠 ໜ້າສາລະບານຫຼັກ</a>
+      <a href="index.html" class="nav-link active">ໜ້າກະດານຄວບຄຸມ (Dashboard)</a>
+      <a href="guide.html" class="nav-link">📚 ຄູ່ມືການຮຽນ (Study Guide)</a>
+    </div>
+  </nav>
+
+  <main class="container">
+    <div class="grid-dashboard">
+      
+      <div class="card">
+        <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <h2 class="card-title">ກ້ອງໜ້າລົດ (Real Video: dome.mp4 + Custom Lane ROI)</h2>
+            <p class="card-description">💡 <strong>ຄລິກລາກໝຸດສີເຫຼືອງ P1-P4</strong> ເທິງວິດີໂອ ຫຼື ກົດປຸ່ມ "ກຳນົດເຂດເລນໃໝ່" ເພື່ອຕັ້ງເຂດເລນຕາມໃຈມັກ</p>
+          </div>
+          <span id="statusBadge" class="badge badge-safe">ປອດໄພ (SAFE)</span>
+        </div>
+
+        <div id="videoWrapper" class="video-wrapper" style="cursor: crosshair;">
+          <canvas id="roadCanvas" width="800" height="450"></canvas>
+        </div>
+
+        <!-- ແຖບປຸ່ມຄວບຄຸມວິດີໂອ, ສຽງ ແລະ ການກຳນົດເຂດເລນ -->
+        <div style="margin-top: 1.25rem; display: flex; gap: 0.65rem; align-items: center; flex-wrap: wrap;">
+          <button id="toggleSimBtn" class="btn btn-primary">⏸️ ຢຸດຊົ່ວຄາວ</button>
+          <button id="toggleAudioBtn" class="btn btn-outline">🔊 ສຽງ: ລະວັງລົດທາງໜ້າ (ON)</button>
+          <button id="setCustomLaneBtn" class="btn btn-outline">📍 ກົດກຳນົດເຂດເລນໃໝ່ (4 ຈຸດ)</button>
+          <button id="resetLaneBtn" class="btn btn-outline">🔄 ຣີເຊັດເລນ</button>
+        </div>
+
+        <div style="margin-top: 1rem; display: flex; align-items: center; gap: 0.75rem;">
+          <span style="font-size: 0.85rem; color: var(--muted-foreground); white-space: nowrap;">ປັບໄລຍະລົດທົດສອບ:</span>
+          <input type="range" id="manualDistanceSlider" min="10" max="60" value="34" step="0.5">
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">ໄລຍະຫ່າງຈາກລົດຄັນໜ້າ</h3>
+            <p class="card-description">ສຽງ <code>ລະວັງລົດທາງໜ້າ.mp3</code> ຈະດັງເມື່ອຕ່ຳກວ່າ 30.0m</p>
+          </div>
+          <div id="distanceValue" class="metric-value" style="color: var(--safe);">34.0 m</div>
+          <p id="alertMessage" style="font-size: 0.875rem; color: var(--muted-foreground);">
+            ໄລຍະຫ່າງຢູ່ໃນເກນປອດໄພ
+          </p>
+        </div>
+
+        <div class="card" style="flex-grow: 1;">
+          <div class="card-header">
+            <h3 class="card-title">ປະຫວັດການແຈ້ງເຕືອນ (< 30m)</h3>
+            <p class="card-description">ບັນທຶກສະເພາະລົດທີ່ຢູ່ໃນເຂດເລນ (P1-P4)</p>
+          </div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>ເວລາ</th>
+                  <th>ໄລຍະຫ່າງ</th>
+                  <th>ສະຖານະ</th>
+                </tr>
+              </thead>
+              <tbody id="alertLogBody">
+                <tr>
+                  <td colspan="3" style="text-align: center; color: var(--muted-foreground);">ຍັງບໍ່ມີການແຈ້ງເຕືອນ</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
